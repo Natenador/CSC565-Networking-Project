@@ -22,8 +22,6 @@ public class DeviceDao {
 
     private Context context;
     private SQLiteDatabase db;
-    private List<Device> deviceList = new ArrayList<Device>();
-    Device device;
 
     public DeviceDao(Context context) {
         setContext(context);
@@ -89,76 +87,6 @@ public class DeviceDao {
         }
     }
 
-    private class GetOneDevice extends AsyncTask<Integer, Void, Boolean> {
-
-        protected Boolean doInBackground(Integer... deviceId) {
-            try {
-                HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
-                db = houseHubDatabase.getReadableDatabase();
-                Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, HouseHubDatabase.DEVICE_ID + "=?", new String[] {Integer.toString(deviceId[0])}, null, null, null);
-                if(cursor.moveToFirst()) {
-                    device.setId(cursor.getInt(0));
-                    device.setName(cursor.getString(1));
-                    device.setIpAddress(cursor.getString(2));
-                    device.setSocketNumber(cursor.getInt(3));
-                    device.setAppName(cursor.getString(4));
-                    device.setConnected(cursor.getInt(5));
-                }
-                db.close();
-                return true;
-            }
-            catch(SQLiteException sqle) {
-                return false;
-            }
-        }
-
-        protected void onPostExecute(Boolean success) {
-
-            if (success) {
-                Toast.makeText(context, "Successfully deleted the device.", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(context, "There was a problem deleting the device.", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
-
-    private class GetDevices extends AsyncTask<Void, Void, Boolean> {
-
-        protected Boolean doInBackground(Void... nothing) {
-            try {
-                HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
-                db = houseHubDatabase.getReadableDatabase();
-                Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, null, null, null, null, HouseHubDatabase.DEVICE_NAME);
-                if(cursor.isBeforeFirst()) {
-                    while(cursor.moveToNext()) {
-                        Device device = new Device();
-                        device.setId(cursor.getInt(0));
-                        device.setName(cursor.getString(1));
-                        device.setIpAddress(cursor.getString(2));
-                        device.setSocketNumber(cursor.getInt(3));
-                        device.setAppName(cursor.getString(4));
-                        device.setConnected(cursor.getInt(5));
-                        deviceList.add(device);
-                    }
-                }
-                db.close();
-                return true;
-            }
-            catch(SQLiteException sqle) {
-                return false;
-            }
-        }
-
-        protected void onPostExecute(Boolean success) {
-
-            if (!success) {
-                Toast.makeText(context, "There was a problem getting devices.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     private void setContext(Context c) {
         context = c;
     }
@@ -174,14 +102,52 @@ public class DeviceDao {
     }
 
     public List<Device> getDeviceList() {
-        GetDevices getDevices = new GetDevices();
-        getDevices.execute();
+        List<Device> deviceList = null;
+        try {
+            deviceList = new ArrayList<Device>();
+            HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
+            db = houseHubDatabase.getReadableDatabase();
+            Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, null, null, null, null, HouseHubDatabase.DEVICE_NAME);
+            if(cursor.isBeforeFirst()) {
+                while(cursor.moveToNext()) {
+                    Device device = new Device();
+                    device.setId(cursor.getInt(0));
+                    device.setName(cursor.getString(1));
+                    device.setIpAddress(cursor.getString(2));
+                    device.setSocketNumber(cursor.getInt(3));
+                    device.setAppName(cursor.getString(4));
+                    device.setConnected(cursor.getInt(5));
+                    deviceList.add(device);
+                }
+            }
+            db.close();
+        }
+        catch(SQLiteException sqle) {
+            Toast.makeText(context, "There was a problem getting the device information", Toast.LENGTH_SHORT).show();
+        }
         return deviceList;
     }
 
     public Device getDevice(int id) {
-        GetOneDevice getOneDevice = new GetOneDevice();
-        getOneDevice.execute(id);
+        Device device = null;
+        try {
+            device = new Device();
+            HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
+            db = houseHubDatabase.getReadableDatabase();
+            Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, HouseHubDatabase.DEVICE_ID + "=?", new String[] {Integer.toString(id)}, null, null, null);
+            if(cursor.moveToFirst()) {
+                device.setId(cursor.getInt(0));
+                device.setName(cursor.getString(1));
+                device.setIpAddress(cursor.getString(2));
+                device.setSocketNumber(cursor.getInt(3));
+                device.setAppName(cursor.getString(4));
+                device.setConnected(cursor.getInt(5));
+            }
+            db.close();
+        }
+        catch(SQLiteException sqle) {
+            Toast.makeText(context, "There was a problem getting the device information", Toast.LENGTH_SHORT).show();
+        }
         return device;
     }
 }

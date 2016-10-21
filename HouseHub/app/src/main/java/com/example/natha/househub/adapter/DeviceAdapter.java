@@ -35,10 +35,12 @@ public class DeviceAdapter extends CursorAdapter {
 
     @Override
     public void bindView(final View view, final Context context, final Cursor cursor) {
-        TextView name = (TextView) view.findViewById(R.id.connection_name);
-        name.setText(cursor.getString(cursor.getColumnIndex(HouseHubDatabase.DEVICE_NAME)) + " : " + cursor.getString(cursor.getColumnIndex(HouseHubDatabase.DEVICE_APP_NAME)));
+        TextView name = (TextView) view.findViewById(R.id.connection_device);
+        name.setText(cursor.getString(cursor.getColumnIndex(HouseHubDatabase.DEVICE_NAME)));
+        TextView app = (TextView) view.findViewById(R.id.connection_app);
+        app.setText("[" + cursor.getString(cursor.getColumnIndex(HouseHubDatabase.DEVICE_APP_NAME)) + "]");
 
-        Switch connected = (Switch) view.findViewById(R.id.connected);
+        Switch connected = (Switch) view.findViewById(R.id.connect);
         if(cursor.getInt(cursor.getColumnIndex(HouseHubDatabase.DEVICE_CONNECTED)) > 0) {
             connected.setChecked(true);
         }
