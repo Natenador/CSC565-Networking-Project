@@ -17,6 +17,10 @@ import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.R;
 import com.example.natha.househub.dao.DeviceDao;
 import com.example.natha.househub.database.HouseHubDatabase;
+import com.example.natha.househub.validation.DeviceValidator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditDevice extends AppCompatActivity {
 
@@ -58,7 +62,6 @@ public class EditDevice extends AppCompatActivity {
         else {
             newDevice = true;
             device = new Device();
-            EditText deviceSocket = (EditText) findViewById(R.id.edit_socket_num);
             deviceSocket.setText(Integer.toString(Device.getCurrentSocketNumber()), TextView.BufferType.EDITABLE);
         }
     }
@@ -106,23 +109,33 @@ public class EditDevice extends AppCompatActivity {
 
         switch(id) {
             case R.id.finish:
-                //Add device validation here
-                DeviceDao deviceDao = new DeviceDao(this);
-                if(newDevice) {
-                    deviceDao.addDevice(createNewDeviceFromInput());
+                Map<String, String> deviceMap = new HashMap<String, String>();
+                deviceMap.put(HouseHubDatabase.DEVICE_NAME, deviceName.getText().toString());
+                deviceMap.put(HouseHubDatabase.DEVICE_IP_ADDRESS, deviceIp.getText().toString());
+                deviceMap.put(HouseHubDatabase.DEVICE_APP_NAME, appName.getText().toString());
+                deviceMap.put(HouseHubDatabase.DEVICE_SOCKET, deviceSocket.getText().toString());
+                DeviceValidator deviceValidator = new DeviceValidator();
+                if(deviceValidator.isValid(deviceMap)) {
+                    //Add device validation here
+                    DeviceDao deviceDao = new DeviceDao(this);
+                    if(newDevice) {
+                        deviceDao.addDevice(createNewDeviceFromInput());
+                    }
+                    else {
+                        makeDeviceChanges();
+                        deviceDao.updateDevice(device);
+                    }
+                    Intent mainIntent = new Intent(this, MainActivity.class);
+                    startActivity(mainIntent);
+                    return true;
                 }
                 else {
-                    makeDeviceChanges();
-                    deviceDao.updateDevice(device);
+                    Toast.makeText(this, deviceValidator.getErrorMessage(), Toast.LENGTH_SHORT).show();
                 }
-                Intent mainIntent = new Intent(this, MainActivity.class);
-                startActivity(mainIntent);
-                return true;
+
 
             default: return super.onOptionsItemSelected(item);
         }
-
-
     }
 
 }

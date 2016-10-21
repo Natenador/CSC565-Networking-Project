@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.database.HouseHubDatabase;
+import com.example.natha.househub.util.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +62,7 @@ public class DeviceDao {
                 Device device = deviceArray[0];
                 HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
                 db = houseHubDatabase.getWritableDatabase();
-                ContentValues deviceToAdd = new ContentValues();
-                deviceToAdd.put(HouseHubDatabase.DEVICE_NAME, device.getName());
-                deviceToAdd.put(HouseHubDatabase.DEVICE_IP_ADDRESS, device.getIpAddress());
-                deviceToAdd.put(HouseHubDatabase.DEVICE_APP_NAME, device.getAppName());
-                deviceToAdd.put(HouseHubDatabase.DEVICE_CONNECTED, device.isConnected());
-                db.insert(HouseHubDatabase.DEVICE_TABLE, null, deviceToAdd);
+                db.insert(HouseHubDatabase.DEVICE_TABLE, null, DeviceUtil.generateContentValuesFromDevice(device, false));
                 db.close();
                 return true;
             }
@@ -93,13 +89,8 @@ public class DeviceDao {
                 Device device = deviceArray[0];
                 HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
                 db = houseHubDatabase.getWritableDatabase();
-                ContentValues deviceToAdd = new ContentValues();
-                deviceToAdd.put(HouseHubDatabase.DEVICE_ID, device.getId());
-                deviceToAdd.put(HouseHubDatabase.DEVICE_NAME, device.getName());
-                deviceToAdd.put(HouseHubDatabase.DEVICE_IP_ADDRESS, device.getIpAddress());
-                deviceToAdd.put(HouseHubDatabase.DEVICE_APP_NAME, device.getAppName());
-                deviceToAdd.put(HouseHubDatabase.DEVICE_CONNECTED, device.isConnected());
-                db.update(HouseHubDatabase.DEVICE_TABLE, deviceToAdd, HouseHubDatabase.DEVICE_ID + "=?", new String[] {Integer.toString(device.getId())});
+
+                db.update(HouseHubDatabase.DEVICE_TABLE, DeviceUtil.generateContentValuesFromDevice(device, true), HouseHubDatabase.DEVICE_ID + "=?", new String[] {Integer.toString(device.getId())});
                 db.close();
                 return true;
             }
@@ -145,17 +136,10 @@ public class DeviceDao {
             deviceList = new ArrayList<Device>();
             HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
             db = houseHubDatabase.getReadableDatabase();
-            Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, null, null, null, null, HouseHubDatabase.DEVICE_NAME);
+            final Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, null, null, null, null, HouseHubDatabase.DEVICE_NAME);
             if(cursor.isBeforeFirst()) {
                 while(cursor.moveToNext()) {
-                    Device device = new Device();
-                    device.setId(cursor.getInt(0));
-                    device.setName(cursor.getString(1));
-                    device.setIpAddress(cursor.getString(2));
-                    device.setSocketNumber(cursor.getInt(3));
-                    device.setAppName(cursor.getString(4));
-                    device.setConnected(cursor.getInt(5));
-                    deviceList.add(device);
+                    deviceList.add(DeviceUtil.generateDeviceFromCursor(cursor));
                 }
             }
             db.close();
@@ -169,17 +153,11 @@ public class DeviceDao {
     public Device getDevice(int id) {
         Device device = null;
         try {
-            device = new Device();
             HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
             db = houseHubDatabase.getReadableDatabase();
             Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, HouseHubDatabase.DEVICE_ID + "=?", new String[] {Integer.toString(id)}, null, null, null);
             if(cursor.moveToFirst()) {
-                device.setId(cursor.getInt(0));
-                device.setName(cursor.getString(1));
-                device.setIpAddress(cursor.getString(2));
-                device.setSocketNumber(cursor.getInt(3));
-                device.setAppName(cursor.getString(4));
-                device.setConnected(cursor.getInt(5));
+                device = DeviceUtil.generateDeviceFromCursor(cursor);
             }
             db.close();
         }
@@ -187,5 +165,22 @@ public class DeviceDao {
             Toast.makeText(context, "There was a problem getting the device information", Toast.LENGTH_SHORT).show();
         }
         return device;
+    }
+
+    public boolean isSocketNumberUnique(int socketNumber) {
+        try {
+            HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
+            db = houseHubDatabase.getReadableDatabase();
+            Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, new String[] {HouseHubDatabase.DEVICE_SOCKET}, HouseHubDatabase.DEVICE_SOCKET + "=?", new String[] {Integer.toString(socketNumber)}, null, null, null);
+            if(cursor.moveToFirst()) {
+                return false;
+            }
+            db.close();
+            return true;
+        }
+        catch(SQLiteException sqle) {
+            Toast.makeText(context, "There was a problem getting the device information", Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

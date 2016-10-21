@@ -1,5 +1,6 @@
 package com.example.natha.househub.util;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.example.natha.househub.Domain.Device;
@@ -19,5 +20,17 @@ public class DeviceUtil {
         device.setIpAddress(cursor.getString(cursor.getColumnIndex(HouseHubDatabase.DEVICE_IP_ADDRESS)));
         device.setConnected(cursor.getInt(cursor.getColumnIndex(HouseHubDatabase.DEVICE_CONNECTED)));
         return device;
+    }
+
+    public static ContentValues generateContentValuesFromDevice(Device device, boolean includeId) {
+        ContentValues deviceContent = new ContentValues();
+        if(includeId) {
+            deviceContent.put(HouseHubDatabase.DEVICE_ID, device.getId());
+        }
+        deviceContent.put(HouseHubDatabase.DEVICE_NAME, device.getName());
+        deviceContent.put(HouseHubDatabase.DEVICE_IP_ADDRESS, device.getIpAddress());
+        deviceContent.put(HouseHubDatabase.DEVICE_APP_NAME, device.getAppName());
+        deviceContent.put(HouseHubDatabase.DEVICE_CONNECTED, device.isConnected());
+        return deviceContent;
     }
 }
