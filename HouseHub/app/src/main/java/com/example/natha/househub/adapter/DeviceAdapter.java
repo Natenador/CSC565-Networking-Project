@@ -55,14 +55,19 @@ public class DeviceAdapter extends CursorAdapter {
         }
 
         connected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    device.setConnected(1);
-                } else {
-                    device.setConnected(0);
+                System.out.println(device.getAppName() + " - Connected? " + (isChecked ? "yes" : "no"));
+                if(buttonView.isPressed()) {
+                    if (isChecked) {
+                        device.setConnected(1);
+                    } else {
+                        device.setConnected(0);
+                    }
+                    DeviceDao deviceDao = new DeviceDao(context);
+                    deviceDao.updateDevice(device);
                 }
-                DeviceDao deviceDao = new DeviceDao(context);
-                deviceDao.updateDevice(device);
             }
         });
 
