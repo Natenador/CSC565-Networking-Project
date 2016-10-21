@@ -25,10 +25,18 @@ public class Device {
         this.socketNumber = socketNumber;
     }
 
-    public int isConnected() {
-        return connected;
+    public boolean isConnected() {
+        if(connected > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
+    public int getConnected() {
+        return connected;
+    }
     public void setConnected(int connected) {
         this.connected = connected;
     }

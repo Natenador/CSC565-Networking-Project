@@ -21,6 +21,14 @@ import com.example.natha.househub.database.HouseHubDatabase;
 public class EditDevice extends AppCompatActivity {
 
     private int deviceId;
+    private boolean newDevice;
+    private Device device;
+
+    private EditText deviceName;
+    private EditText deviceIp;
+    private EditText deviceSocket;
+    private EditText appName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +45,19 @@ public class EditDevice extends AppCompatActivity {
             }
         });
 
+        deviceName = (EditText) findViewById(R.id.edit_device_name);
+        deviceIp = (EditText) findViewById(R.id.edit_ip_address);
+        deviceSocket = (EditText) findViewById(R.id.edit_socket_num);
+        appName = (EditText) findViewById(R.id.edit_app_name);
+
         deviceId = getIntent().getIntExtra(HouseHubDatabase.DEVICE_ID, -1);
         if(deviceId >= 0) {
+            newDevice = false;
             populateEditScreen(deviceId);
         }
         else {
+            newDevice = true;
+            device = new Device();
             EditText deviceSocket = (EditText) findViewById(R.id.edit_socket_num);
             deviceSocket.setText(Integer.toString(Device.getCurrentSocketNumber()), TextView.BufferType.EDITABLE);
         }
@@ -49,26 +65,15 @@ public class EditDevice extends AppCompatActivity {
 
     private void populateEditScreen(int id) {
         DeviceDao deviceDao = new DeviceDao(this);
-        Device device = deviceDao.getDevice(id);
-        EditText deviceName = (EditText) findViewById(R.id.edit_device_name);
-        EditText deviceIp = (EditText) findViewById(R.id.edit_ip_address);
-        EditText deviceSocket = (EditText) findViewById(R.id.edit_socket_num);
-        EditText appName = (EditText) findViewById(R.id.edit_app_name);
+        device = deviceDao.getDevice(id);
 
         deviceName.setText(device.getName());
         deviceIp.setText(device.getIpAddress());
-        deviceSocket.setText(Integer.toString(Device.getCurrentSocketNumber()), TextView.BufferType.EDITABLE);
+        deviceSocket.setText(Integer.toString(device.getSocketNumber()), TextView.BufferType.EDITABLE);
         appName.setText(device.getAppName());
     }
 
-    private Device createDeviceFromInput() {
-        Device device = new Device();
-        EditText deviceName = (EditText) findViewById(R.id.edit_device_name);
-        EditText deviceIp = (EditText) findViewById(R.id.edit_ip_address);
-        EditText deviceSocket = (EditText) findViewById(R.id.edit_socket_num);
-        EditText appName = (EditText) findViewById(R.id.edit_app_name);
-
-        device.setId(deviceId);
+    private Device createNewDeviceFromInput() {
         device.setName(deviceName.getText().toString());
         device.setIpAddress(deviceIp.getText().toString());
         device.setAppName(appName.getText().toString());
@@ -76,6 +81,13 @@ public class EditDevice extends AppCompatActivity {
         device.setConnected(0);
 
         return device;
+    }
+
+    private void makeDeviceChanges() {
+        device.setName(deviceName.getText().toString());
+        device.setIpAddress(deviceIp.getText().toString());
+        device.setAppName(appName.getText().toString());
+        device.setSocketNumber(Integer.parseInt(deviceSocket.getText().toString()));
     }
 
     @Override
@@ -94,12 +106,14 @@ public class EditDevice extends AppCompatActivity {
 
         switch(id) {
             case R.id.finish:
+                //Add device validation here
                 DeviceDao deviceDao = new DeviceDao(this);
-                if(deviceId < 0) {
-                    deviceDao.addDevice(createDeviceFromInput());
+                if(newDevice) {
+                    deviceDao.addDevice(createNewDeviceFromInput());
                 }
                 else {
-
+                    makeDeviceChanges();
+                    deviceDao.updateDevice(device);
                 }
                 Intent mainIntent = new Intent(this, MainActivity.class);
                 startActivity(mainIntent);

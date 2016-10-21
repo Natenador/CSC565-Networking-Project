@@ -6,13 +6,18 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.R;
 import com.example.natha.househub.activity.EditDevice;
+import com.example.natha.househub.dao.DeviceDao;
 import com.example.natha.househub.database.HouseHubDatabase;
+import com.example.natha.househub.util.DeviceUtil;
 
 /**
  * Created by natha on 10/16/2016.
@@ -35,18 +40,31 @@ public class DeviceAdapter extends CursorAdapter {
 
     @Override
     public void bindView(final View view, final Context context, final Cursor cursor) {
+        final Device device = DeviceUtil.generateDeviceFromCursor(cursor);
         TextView name = (TextView) view.findViewById(R.id.connection_device);
-        name.setText(cursor.getString(cursor.getColumnIndex(HouseHubDatabase.DEVICE_NAME)));
+        name.setText(device.getName());
         TextView app = (TextView) view.findViewById(R.id.connection_app);
-        app.setText("[" + cursor.getString(cursor.getColumnIndex(HouseHubDatabase.DEVICE_APP_NAME)) + "]");
+        app.setText("[" + device.getAppName() + "]");
 
-        Switch connected = (Switch) view.findViewById(R.id.connect);
-        if(cursor.getInt(cursor.getColumnIndex(HouseHubDatabase.DEVICE_CONNECTED)) > 0) {
+        final Switch connected = (Switch) view.findViewById(R.id.connect);
+        if(device.isConnected()) {
             connected.setChecked(true);
         }
         else {
             connected.setChecked(false);
         }
+
+        connected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    device.setConnected(1);
+                } else {
+                    device.setConnected(0);
+                }
+                DeviceDao deviceDao = new DeviceDao(context);
+                deviceDao.updateDevice(device);
+            }
+        });
 
         view.setOnClickListener(new View.OnClickListener() {  //if list item is clicked, go to edit screen
 
