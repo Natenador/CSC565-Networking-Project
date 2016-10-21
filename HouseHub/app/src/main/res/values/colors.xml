@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="deviceRowBackground">#DEDEDE</color>
-    <color name="homeHubBackground">#222222</color>
-    <color name="homeHubForeground">#DEDEDE</color>
+    <color name="houseHubBackground">#222222</color>
+    <color name="houseHubForeground">#DEDEDE</color>
+    <color name="userInputBackground">#444444</color>
+    <color name="userInputForeground">#666666</color>
 </resources>

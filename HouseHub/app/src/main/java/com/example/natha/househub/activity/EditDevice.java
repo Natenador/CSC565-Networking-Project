@@ -20,6 +20,7 @@ import com.example.natha.househub.database.HouseHubDatabase;
 
 public class EditDevice extends AppCompatActivity {
 
+    private int deviceId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +37,9 @@ public class EditDevice extends AppCompatActivity {
             }
         });
 
-        int id = getIntent().getIntExtra(HouseHubDatabase.DEVICE_ID, -1);
-        if(id >= 0) {
-            populateEditScreen(id);
+        deviceId = getIntent().getIntExtra(HouseHubDatabase.DEVICE_ID, -1);
+        if(deviceId >= 0) {
+            populateEditScreen(deviceId);
         }
         else {
             EditText deviceSocket = (EditText) findViewById(R.id.edit_socket_num);
@@ -67,6 +68,7 @@ public class EditDevice extends AppCompatActivity {
         EditText deviceSocket = (EditText) findViewById(R.id.edit_socket_num);
         EditText appName = (EditText) findViewById(R.id.edit_app_name);
 
+        device.setId(deviceId);
         device.setName(deviceName.getText().toString());
         device.setIpAddress(deviceIp.getText().toString());
         device.setAppName(appName.getText().toString());
@@ -93,7 +95,12 @@ public class EditDevice extends AppCompatActivity {
         switch(id) {
             case R.id.finish:
                 DeviceDao deviceDao = new DeviceDao(this);
-                deviceDao.addDevice(createDeviceFromInput());
+                if(deviceId < 0) {
+                    deviceDao.addDevice(createDeviceFromInput());
+                }
+                else {
+
+                }
                 Intent mainIntent = new Intent(this, MainActivity.class);
                 startActivity(mainIntent);
                 return true;

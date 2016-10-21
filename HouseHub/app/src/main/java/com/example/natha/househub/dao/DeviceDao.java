@@ -87,6 +87,39 @@ public class DeviceDao {
         }
     }
 
+    private class UpdateDevice extends AsyncTask<Device, Void, Boolean> {
+        protected Boolean doInBackground(Device... deviceArray) {
+            try {
+                Device device = deviceArray[0];
+                HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
+                db = houseHubDatabase.getWritableDatabase();
+                ContentValues deviceToAdd = new ContentValues();
+                deviceToAdd.put(HouseHubDatabase.DEVICE_ID, device.getId());
+                deviceToAdd.put(HouseHubDatabase.DEVICE_NAME, device.getName());
+                deviceToAdd.put(HouseHubDatabase.DEVICE_IP_ADDRESS, device.getIpAddress());
+                deviceToAdd.put(HouseHubDatabase.DEVICE_APP_NAME, device.getAppName());
+                deviceToAdd.put(HouseHubDatabase.DEVICE_CONNECTED, device.isConnected());
+                db.update(HouseHubDatabase.DEVICE_TABLE, deviceToAdd, HouseHubDatabase.DEVICE_ID + "=?", new String[] {Integer.toString(device.getId())});
+                db.close();
+                return true;
+            }
+            catch(SQLiteException sqle) {
+                return false;
+            }
+        }
+
+        protected void onPostExecute(Boolean success) {
+
+            if (success) {
+                Toast.makeText(context, "Successfully updated the device.", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "There was a problem updating the device.", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
     private void setContext(Context c) {
         context = c;
     }
@@ -99,6 +132,11 @@ public class DeviceDao {
     public void addDevice(Device device) {
         AddDevice addDevice = new AddDevice();
         addDevice.execute(device);
+    }
+
+    public void updateDevice(Device device) {
+        UpdateDevice updateDevice = new UpdateDevice();
+        updateDevice.execute(device);
     }
 
     public List<Device> getDeviceList() {
