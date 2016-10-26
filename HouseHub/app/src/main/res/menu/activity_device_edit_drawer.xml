@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/view_devices"
+            android:icon="@drawable/ic_stay_current_portrait_black_24dp"
+            android:title="View Devices" />
+    </group>
+
+    <item android:title="Controls and Views">
+        <menu>
+            <item
+                android:id="@+id/command_list"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Command List" />
+        </menu>
+    </item>
+
+</menu>

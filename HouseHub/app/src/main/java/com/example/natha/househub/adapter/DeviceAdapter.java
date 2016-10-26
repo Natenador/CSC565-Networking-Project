@@ -75,7 +75,7 @@ public class DeviceAdapter extends CursorAdapter {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, EditDevice.class);  //go to EditDevice activity
+                Intent intent = new Intent(context, DeviceEdit.class);  //go to EditDevice activity
                 intent.putExtra(HouseHubDatabase.DEVICE_ID, cursor.getInt(cursor.getColumnIndex(HouseHubDatabase.DEVICE_ID)));
                 context.startActivity(intent);
             }
