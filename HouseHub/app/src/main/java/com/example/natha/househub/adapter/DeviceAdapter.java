@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.R;
 import com.example.natha.househub.activity.EditDevice;
+import com.example.natha.househub.activity.MainActivity;
 import com.example.natha.househub.dao.DeviceDao;
 import com.example.natha.househub.database.HouseHubDatabase;
 import com.example.natha.househub.util.DeviceUtil;
@@ -58,7 +59,6 @@ public class DeviceAdapter extends CursorAdapter {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                System.out.println(device.getAppName() + " - Connected? " + (isChecked ? "yes" : "no"));
                 if(buttonView.isPressed()) {
                     if (isChecked) {
                         device.setConnected(1);
@@ -66,7 +66,12 @@ public class DeviceAdapter extends CursorAdapter {
                         device.setConnected(0);
                     }
                     DeviceDao deviceDao = new DeviceDao(context);
-                    deviceDao.updateDevice(device);
+                    deviceDao.disconnectCurrentDevice();
+                    if(device.isConnected()) { //only necessary to update when connecting a device, otherwise 'disconnectCurrentDevice' takes care of it.
+                        deviceDao.updateDevice(device);
+                    }
+                    Intent intent = new Intent(context, MainActivity.class);
+                    context.startActivity(intent);
                 }
             }
         });

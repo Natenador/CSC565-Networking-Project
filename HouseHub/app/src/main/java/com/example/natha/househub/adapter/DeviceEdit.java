@@ -77,7 +77,6 @@ public class DeviceEdit extends AppCompatActivity
         else {
             newDevice = true;
             device = new Device();
-            deviceSocket.setText(Integer.toString(Device.getCurrentSocketNumber()), TextView.BufferType.EDITABLE);
         }
     }
 

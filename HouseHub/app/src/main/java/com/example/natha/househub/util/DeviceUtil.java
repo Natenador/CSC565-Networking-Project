@@ -31,6 +31,7 @@ public class DeviceUtil {
         deviceContent.put(HouseHubDatabase.DEVICE_IP_ADDRESS, device.getIpAddress());
         deviceContent.put(HouseHubDatabase.DEVICE_APP_NAME, device.getAppName());
         deviceContent.put(HouseHubDatabase.DEVICE_CONNECTED, device.isConnected());
+        deviceContent.put(HouseHubDatabase.DEVICE_SOCKET, device.getSocketNumber());
         return deviceContent;
     }
 }

@@ -12,4 +12,6 @@
     <string name="device_list_header">Flip the switch to connect/disconnect the device</string>
     <string name="device">Device</string>
     <string name="title_activity_device_edit">DeviceEdit</string>
+
+    <string name="current_connection">Current App Connection</string>
 </resources>

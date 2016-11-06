@@ -150,6 +150,50 @@ public class DeviceDao {
         return deviceList;
     }
 
+    public Device getCurrentConnection() {
+        Device device;
+        try {
+            HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
+            db = houseHubDatabase.getReadableDatabase();
+            Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, HouseHubDatabase.DEVICE_CONNECTED + "=?", new String[] {Integer.toString(1)}, null, null, null);
+            if(cursor.moveToFirst()) {
+                device = DeviceUtil.generateDeviceFromCursor(cursor);
+            }
+            else {
+                device = new Device();
+                device.setAppName("None");
+            }
+            db.close();
+        }
+        catch(SQLiteException sqle) {
+            Toast.makeText(context, "There was a problem getting the device information", Toast.LENGTH_SHORT).show();
+            device = new Device();
+            device.setAppName("Error");
+        }
+        return device;
+    }
+
+    public void disconnectCurrentDevice() {
+        try {
+            HouseHubDatabase houseHubDatabase = new HouseHubDatabase(context);
+            db = houseHubDatabase.getWritableDatabase();
+            Cursor cursor = db.query(HouseHubDatabase.DEVICE_TABLE, HouseHubDatabase.DEVICE_ARRAY, HouseHubDatabase.DEVICE_CONNECTED + "=?", new String[] {Integer.toString(1)}, null, null, null);
+            if(cursor.moveToFirst()) {
+                Device device = DeviceUtil.generateDeviceFromCursor(cursor);
+                device.setConnected(0);
+                db.update(HouseHubDatabase.DEVICE_TABLE, DeviceUtil.generateContentValuesFromDevice(device, true), HouseHubDatabase.DEVICE_ID + "=?", new String[]{Integer.toString(device.getId())});
+                Toast.makeText(context, "Found an already connected device. Disconnecting", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "Did not find an already connected device.", Toast.LENGTH_SHORT).show();
+            }
+            db.close();
+        }
+        catch(SQLiteException sqle) {
+            Toast.makeText(context, "There was a problem getting the device information", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public Device getDevice(int id) {
         Device device = null;
         try {

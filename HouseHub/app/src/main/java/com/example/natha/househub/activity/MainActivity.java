@@ -1,5 +1,6 @@
 package com.example.natha.househub.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,10 +19,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.natha.househub.R;
 import com.example.natha.househub.adapter.DeviceAdapter;
+import com.example.natha.househub.adapter.DeviceEdit;
+import com.example.natha.househub.dao.DeviceDao;
 import com.example.natha.househub.database.HouseHubDatabase;
 
 public class MainActivity extends AppCompatActivity
@@ -53,6 +57,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerLayout = navigationView.getHeaderView(0);
+        TextView currentAppConnection = (TextView) headerLayout.findViewById(R.id.current_app_connection);
+        DeviceDao deviceDao = new DeviceDao(this);
+        currentAppConnection.setText(deviceDao.getCurrentConnection().getAppName());
 
         populateDeviceList();
     }
@@ -99,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         switch(id) {
             case R.id.add_app:
-                Intent createDeviceIntent = new Intent(this, EditDevice.class);
+                Intent createDeviceIntent = new Intent(this, DeviceEdit.class);
                 startActivity(createDeviceIntent);
                 return true;
             case R.id.action_settings:
@@ -116,6 +125,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.view_devices) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             return true;
         }
 
