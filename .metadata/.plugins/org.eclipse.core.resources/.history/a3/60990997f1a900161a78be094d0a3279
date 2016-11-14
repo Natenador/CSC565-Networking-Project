@@ -1,0 +1,12 @@
+package messages;
+
+public class RequestMessage{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8420419057923672407L;
+	
+	private
+
+}

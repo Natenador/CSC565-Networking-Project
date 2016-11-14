@@ -1,0 +1,24 @@
+package factory;
+
+import java.io.IOException;
+
+import base.HouseHubConnection;
+import client_side.ControllerConnection;
+import server_side.MultiClientConnection;
+import server_side.SingleClientConnection;
+
+public class HouseHubConnectionFactory{
+
+	public static HouseHubConnection getConnection(int connection) throws IOException {
+		switch(connection) {
+		case HouseHubConnection.CONTROLLER_CONNECTION:
+			return new ControllerConnection();
+		case HouseHubConnection.MULTI_CLIENT_CONNECTION:
+			return new MultiClientConnection();
+		case HouseHubConnection.SINGLE_CLIENT_CONNECTION:
+			return new SingleClientConnection(13000);
+		default:
+			return null;
+		}
+	}
+}

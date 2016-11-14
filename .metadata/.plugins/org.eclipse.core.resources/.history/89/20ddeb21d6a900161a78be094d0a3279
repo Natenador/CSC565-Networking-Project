@@ -1,0 +1,47 @@
+package server_side;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+
+import base.HouseHubConnection;
+
+public class SingleClientConnection extends HouseHubConnection{
+
+	private ServerSocket serverSocket;
+	Socket server;
+	
+	public SingleClientConnection() throws IOException {
+		serverSocket = new ServerSocket(socketNumber);
+	}
+	
+	public void run() {
+		connected = true;
+		while(connected) {
+			try {
+				System.out.println("Waiting for client on port " + socketNumber);
+				serverSocket.setSoTimeout(5000);
+				server = serverSocket.accept();
+				System.out.println("connected.");
+				DataInputStream fromClient = new DataInputStream(server.getInputStream());
+				System.out.println("From Controller: " +  fromClient.readUTF());
+				DataOutputStream toClient = new DataOutputStream(server.getOutputStream());
+				toClient.writeUTF("I hear you loud and clear! From Server App");
+				server.close();
+			}
+			catch(Exception e) {
+				System.out.println("Something Happened.");
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		SingleClientConnection app = new SingleClientConnection();
+		app.setSocketNumber(13000);
+		app.start();
+	}
+}

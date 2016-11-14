@@ -1,0 +1,24 @@
+package messages;
+
+import java.io.Serializable;
+
+import test.Device;
+
+public class HouseHubMessage implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7238868535000515345L;
+	
+	private int id;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+}

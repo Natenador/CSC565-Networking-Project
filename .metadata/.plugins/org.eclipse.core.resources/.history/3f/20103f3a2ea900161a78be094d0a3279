@@ -1,0 +1,48 @@
+package test;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Date;
+
+import client_side.ControllerConnection;
+import server_side.SingleClientConnection;
+
+public class ConnectionTesting {
+	
+	public static void main(String[] args) throws IOException {
+		Device device = new Device("Test Device");
+		device.setIpAddress("localhost");
+		device.setPortNumber(13001);
+		
+		boolean connected = true;
+		ControllerConnection controller = new ControllerConnection();
+		SingleClientConnection app = new SingleClientConnection();
+		app.setSocketNumber(13001);
+		app.start();
+		controller.connectTo(device);
+		while(connected) {
+			System.out.println("Enter in a line:");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			if(!reader.readLine().equals("quit")) {
+			controller.send(reader.readLine());
+			long start = new Date().getTime();
+			boolean outOfTime = false;
+			while(!controller.hasMessage() && !outOfTime) {
+				long finish = new Date().getTime();
+				if((finish - start) > 5000) {
+					outOfTime = true;
+					System.out.println("Ran out of time.");
+				}
+			}
+			if(controller.hasMessage()) {
+				System.out.println(controller.getRecentMessage());
+			}
+			else {
+				System.out.println("It has failed. This message is most likely hahahaha....");
+			}
+			}
+		}
+	}
+
+}

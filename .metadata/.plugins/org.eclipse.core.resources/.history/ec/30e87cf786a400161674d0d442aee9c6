@@ -1,0 +1,75 @@
+package client_side;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import base.HouseHubConnection;
+import base.HouseHubConnectionInterface;
+import test.Device;
+
+public class ControllerConnection extends HouseHubConnection implements HouseHubConnectionInterface{
+	
+	
+	private String hostName;
+	private boolean connected;
+	Socket controllerSocket;
+	DataOutputStream toServer;
+	DataInputStream fromServer;
+	Queue<String> messagesFromServer = new LinkedBlockingQueue<String>();
+	
+	public ControllerConnection() {
+		connected = false;
+	}
+
+	@Override
+	public void send(String message) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public int connectTo(Device device) {
+		setHostName(device.getIpAddress());
+		setSocketNumber(device.getPortNumber());
+		setId(CURRENT_ID++);
+		try {
+			controllerSocket = new Socket(hostName, socketNumber);
+			toServer = new DataOutputStream(controllerSocket.getOutputStream());
+			toServer.writeUTF("Hello! I have connected to you.");
+			fromServer = new DataInputStream(controllerSocket.getInputStream());
+			new ControllerThread().start();
+		}
+		catch(IOException e) {
+			System.out.println("Could not connect to " + hostName);
+		}
+		return id;
+	}
+	
+	private class ControllerThread extends Thread {
+		
+		public void run() {
+			while(true) {
+				try {
+					messagesFromServer.add(fromServer.readUTF());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+}

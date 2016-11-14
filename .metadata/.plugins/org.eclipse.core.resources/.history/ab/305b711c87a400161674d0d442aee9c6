@@ -1,0 +1,10 @@
+package base;
+
+import test.Device;
+
+public interface HouseHubConnectionInterface {
+
+	public void send(String message);
+	
+	public int connectTo(Device device);
+}

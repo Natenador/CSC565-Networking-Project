@@ -1,0 +1,10 @@
+package views;
+
+public class DataList extends HouseHubView {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6205391688593759222L;
+
+}

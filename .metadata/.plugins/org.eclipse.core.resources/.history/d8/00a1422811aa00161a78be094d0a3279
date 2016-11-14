@@ -1,0 +1,31 @@
+package server_side;
+
+import base.HouseHubViewInterface;
+import data.CommandListItem;
+import views.CommandList;
+import views.DataList;
+
+/**
+ * This class will be used to generate views for the Grocery List App
+ * Not accurate at the moment
+ * @author natha
+ *
+ */
+public class ViewCreation implements HouseHubViewInterface{
+
+	@Override
+	public CommandList createCommandList() {
+		CommandList commands = new CommandList();
+		commands.addCommand("Play", 0);
+		commands.addCommand("Stop", 1);
+		commands.addCommand("Pause", 2);
+		return commands;
+	}
+
+	@Override
+	public DataList createDataList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

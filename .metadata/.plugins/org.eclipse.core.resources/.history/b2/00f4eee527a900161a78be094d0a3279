@@ -1,0 +1,15 @@
+package server_side;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import base.HouseHubConnection;
+
+public class SingleClientConnection extends HouseHubConnection{
+
+	private ServerSocket serverSocket;
+	
+	public SingleClientConnection() 
+	{
+	}
+}

@@ -1,0 +1,15 @@
+package data;
+
+public class HouseHubData {
+	
+	private int command;
+
+	public int getCommand() {
+		return command;
+	}
+
+	public void setCommand(int command) {
+		this.command = command;
+	}
+
+}

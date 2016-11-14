@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="client_side.ControllerConnection"/>
+<fullyQualifiedTypeName name="server_side.MultiClientConnection"/>
+<fullyQualifiedTypeName name="base.HouseHubConnection"/>
+<fullyQualifiedTypeName name="server_side.SingleClientConnection"/>
+<fullyQualifiedTypeName name="base.HouseHubConnectionInterface"/>
+<fullyQualifiedTypeName name="test.Device"/>
+<fullyQualifiedTypeName name="java.net.Socket"/>
+<fullyQualifiedTypeName name="java.io.OutputStream"/>
+<fullyQualifiedTypeName name="java.io.DataOutputStream"/>
+<fullyQualifiedTypeName name="java.io.DataInputStream"/>
+<fullyQualifiedTypeName name="java.util.Queue"/>
+<fullyQualifiedTypeName name="java.util.concurrent.LinkedBlockingQueue"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+</qualifiedTypeNameHistroy>

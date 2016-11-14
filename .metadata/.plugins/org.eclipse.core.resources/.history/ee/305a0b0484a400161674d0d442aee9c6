@@ -1,0 +1,30 @@
+package base;
+
+import base.HouseHubConnectionInterface;
+
+public class HouseHubConnection{
+	
+	public static int CURRENT_ID = 0;
+	public static final int CONTROLLER_CONNECTION = 0;
+	public static final int MULTI_CLIENT_CONNECTION = 1;
+	public static final int SINGLE_CLIENT_CONNECTION = 2;
+	
+	private int socketNumber;
+	private int id;
+
+	public int getSocketNumber() {
+		return socketNumber;
+	}
+
+	public void setSocketNumber(int socketNumber) {
+		this.socketNumber = socketNumber;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+}

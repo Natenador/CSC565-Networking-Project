@@ -1,0 +1,10 @@
+package views;
+
+public class CommandList extends HouseHubView {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3556277046405156405L;
+	
+}

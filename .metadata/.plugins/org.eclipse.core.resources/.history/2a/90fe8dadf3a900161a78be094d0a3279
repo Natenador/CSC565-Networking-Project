@@ -1,0 +1,20 @@
+package data;
+
+public class CommandListItem extends HouseHubData {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1217905918477452666L;
+	
+	private String commandName;
+
+	public String getCommandName() {
+		return commandName;
+	}
+
+	public void setCommandName(String commandName) {
+		this.commandName = commandName;
+	}
+
+}

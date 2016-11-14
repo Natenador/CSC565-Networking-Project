@@ -1,0 +1,15 @@
+package factory;
+
+import java.io.IOException;
+
+import base.HouseHubConnection;
+import client_side.ControllerConnection;
+import server_side.MultiClientConnection;
+import server_side.SingleClientConnection;
+
+public class HouseHubConnectionFactory{
+
+	public static HouseHubV throws IOException {
+		
+	}
+}

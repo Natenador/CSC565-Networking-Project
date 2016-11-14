@@ -1,0 +1,25 @@
+package base;
+
+public class HouseHubConnection {
+	
+	public static final int CONTROLLER_CONNECTION = 0;
+	public static final int MULTI_CLIENT_CONNECTION = 1;
+	public static final int SINGLE_CLIENT_CONNECTION = 2;
+	
+	private int socketNumber;
+	
+	
+	public void send(String message) {
+		
+	}
+
+
+	public int getSocketNumber() {
+		return socketNumber;
+	}
+
+
+	public void setSocketNumber(int socketNumber) {
+		this.socketNumber = socketNumber;
+	}
+}

@@ -1,0 +1,149 @@
+package client_side;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.util.Date;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import base.HouseHubConnection;
+import base.HouseHubConnectionInterface;
+import test.Device;
+
+public class ControllerConnection extends HouseHubConnection{
+	
+	
+	private String hostName;
+	Socket controllerSocket;
+	DataOutputStream toServer;
+	DataInputStream fromServer;
+	ControllerThread controllerThread;
+	Queue<String> messagesFromServer = new LinkedBlockingQueue<String>();
+	
+	public ControllerConnection() {
+		connected = false;
+	}
+
+	public void send(String message) throws IOException {
+		controllerThread.send(message);
+	}
+
+	public int connectTo(Device device) {
+		setHostName(device.getIpAddress());
+		setSocketNumber(device.getPortNumber());
+		setId(CURRENT_ID++);
+		try {
+			System.out.println("Trying to connect to the app...");
+			controllerSocket = new Socket(hostName, socketNumber);
+			toServer = new DataOutputStream(controllerSocket.getOutputStream());
+			toServer.writeUTF("Hello! I have connected to you.");
+			System.out.println("Sent Init Message");
+			//controllerThread = new ControllerThread();
+			//controllerThread.start();
+			connected = true;
+		}
+		catch(IOException e) {
+			System.out.println("Could not connect to " + hostName);
+			e.printStackTrace();
+		}
+		String messageToServer = "";
+		while(!messageToServer.equals("quit")) {
+			fromServer = new DataInputStream(controllerSocket.getInputStream());
+			if(fromServer.available() > 0) {
+				messagesFromServer.add(fromServer.readUTF());
+			}
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			System.out.println("Enter a message:");
+			messageToServer = reader.readLine();
+			boolean timeUp = false;
+			long start = new Date().getTime();
+			while(!hasMessage() && !timeUp) {
+				long finish = new Date().getTime();
+				if((finish - start) > 5000) {
+					timeUp = true;
+					System.out.println("Found no messages in 5 seconds");
+				}
+			}
+			if(hasMessage()) {
+				System.out.println(getRecentMessage());
+			}
+			else {
+				System.out.println("You have failed. Muahahaha.");
+			}
+		}
+		disconnect();
+	}
+	
+	@Override
+	public void disconnect() throws IOException {
+		super.disconnect();
+		controllerThread.disconnect();
+		toServer.close();
+		fromServer.close();
+		controllerSocket.close();
+	}
+	
+	private class ControllerThread extends Thread {
+		
+		private boolean connected;
+		
+		public void run() {
+			connected = true;
+			while(connected) {
+				try {
+					fromServer = new DataInputStream(controllerSocket.getInputStream());
+					if(fromServer.available() > 0) {
+						messagesFromServer.add(fromServer.readUTF());
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		public void send(String message) throws IOException {
+			System.out.println("Trying to send '" + message + "' to the app");
+			toServer = new DataOutputStream(controllerSocket.getOutputStream());
+			toServer.writeUTF(message);
+		}
+		
+		public void disconnect() {
+			connected = false;
+		}
+		
+	}
+	
+	public String getRecentMessage() {
+		String message = "There are no recent messages from the client.";
+		if(!messagesFromServer.isEmpty()) {
+			message =  messagesFromServer.remove();
+		}
+		return message;
+	}
+	
+	public boolean hasMessage() {
+		return !messagesFromServer.isEmpty();
+	}
+	
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Device device = new Device("Test Device");
+		device.setIpAddress("localhost");
+		device.setPortNumber(13000);
+		
+		ControllerConnection controller = new ControllerConnection();
+		controller.connectTo(device);
+		
+}

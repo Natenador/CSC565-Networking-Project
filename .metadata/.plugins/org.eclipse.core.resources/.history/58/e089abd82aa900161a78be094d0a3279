@@ -1,0 +1,30 @@
+package server_side;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import base.HouseHubConnection;
+
+public class SingleClientConnection extends HouseHubConnection{
+
+	private ServerSocket serverSocket;
+	
+	public SingleClientConnection() {}
+	
+	public void run() {
+		connected = true;
+		serverSocket = new ServerSocket(socketNumber);
+		while(connected) {
+			try {
+				Socket server = serverSocket.accept();
+				DataInputStream fromClient = new DataInputStream(server.getInputStream());
+				System.out.println("From Controller: " +  fromClient.readUTF());
+				DataOutputStream toClient = new DataOutputStream(server.getOutputStream());
+				toClient.writeUTF("I hear you loud and clear! From Server App");
+			}
+		}
+	}
+}

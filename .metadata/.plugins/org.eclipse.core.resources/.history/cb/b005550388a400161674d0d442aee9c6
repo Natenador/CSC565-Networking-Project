@@ -1,0 +1,14 @@
+package base;
+
+import java.io.IOException;
+
+import test.Device;
+
+public interface HouseHubConnectionInterface {
+
+	public void send(String message) throws IOException;
+	
+	public int connectTo(Device device);
+	
+	public void disconnect();
+}

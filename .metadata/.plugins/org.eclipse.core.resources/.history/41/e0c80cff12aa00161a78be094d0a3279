@@ -1,0 +1,29 @@
+package views;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import data.DataListItem;
+
+public class DataList extends HouseHubView {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6205391688593759222L;
+	
+	private List<DataListItem> dataItems = new ArrayList<DataListItem>();
+	
+	public DataList() {
+		setType(DATA_LIST);
+	}
+
+	public List<DataListItem> getDataItems() {
+		return dataItems;
+	}
+
+	public void setDataItems(List<DataListItem> dataItems) {
+		this.dataItems = dataItems;
+	}
+
+}

@@ -1,0 +1,22 @@
+package test;
+
+import client_side.ControllerConnection;
+import server_side.SingleClientConnection;
+
+public class ConnectionTesting {
+	
+	public static void main(String[] args) {
+		Device device = new Device("Test Device");
+		device.setIpAddress("localhost");
+		device.setPortNumber(13001);
+		
+		boolean connected = true;
+		ControllerConnection controller = new ControllerConnection();
+		Thread app = new SingleClientConnection();
+		controller.connectTo(device);
+		while(connected) {
+			System.out.println(x);
+		}
+	}
+
+}

@@ -1,0 +1,13 @@
+package base;
+
+import java.io.IOException;
+
+import test.Device;
+import views.CommandList;
+import views.DataList;
+
+public interface HouseHubViewInterface {
+
+	public CommandList createCommandList();
+	public DataList createDataList();
+}
