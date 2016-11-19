@@ -1,6 +1,5 @@
 package com.example.natha.househub.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,14 +23,18 @@ import android.widget.Toast;
 
 import com.example.natha.househub.R;
 import com.example.natha.househub.adapter.DeviceAdapter;
-import com.example.natha.househub.adapter.DeviceEdit;
 import com.example.natha.househub.dao.DeviceDao;
 import com.example.natha.househub.database.HouseHubDatabase;
+
+import client_side.ControllerConnection;
+import domain.Device;
+import views.CommandList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private SQLiteDatabase db;
+    Device currentDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,8 @@ public class MainActivity extends AppCompatActivity
         View headerLayout = navigationView.getHeaderView(0);
         TextView currentAppConnection = (TextView) headerLayout.findViewById(R.id.current_app_connection);
         DeviceDao deviceDao = new DeviceDao(this);
-        currentAppConnection.setText(deviceDao.getCurrentConnection().getAppName());
+        currentDevice = deviceDao.getCurrentConnection();
+        currentAppConnection.setText(currentDevice.getAppName());
 
         populateDeviceList();
     }
@@ -123,11 +127,20 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Intent intent;
+        switch(id) {
+            case R.id.view_devices:
+                intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.command_list:
+                ControllerConnection controller = new ControllerConnection(currentDevice);
+                CommandList commandList = controller.requestCommandList();
+                intent = new Intent(this, CommandList.class);
+                intent.putExtra("command_list", commandList);
+                startActivity(intent);
+                return true;
 
-        if (id == R.id.view_devices) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            return true;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

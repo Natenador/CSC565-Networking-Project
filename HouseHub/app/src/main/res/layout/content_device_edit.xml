@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.natha.househub.adapter.DeviceEdit"
+    tools:context=".activity.DeviceEdit"
     tools:showIn="@layout/app_bar_device_edit"
     android:background="@color/houseHubBackground"
     android:orientation="vertical">

@@ -1,4 +1,4 @@
-package com.example.natha.househub.adapter;
+package com.example.natha.househub.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.R;
 import com.example.natha.househub.activity.MainActivity;
 import com.example.natha.househub.dao.DeviceDao;
@@ -27,12 +26,15 @@ import com.example.natha.househub.validation.DeviceValidator;
 import java.util.HashMap;
 import java.util.Map;
 
+import domain.Device;
+
 public class DeviceEdit extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private int deviceId;
     private boolean newDevice;
     private Device device;
+    private Device currentDevice;
 
     private EditText deviceName;
     private EditText deviceIp;
@@ -63,6 +65,12 @@ public class DeviceEdit extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerLayout = navigationView.getHeaderView(0);
+        TextView currentAppConnection = (TextView) headerLayout.findViewById(R.id.current_app_connection);
+        DeviceDao deviceDao = new DeviceDao(this);
+        currentDevice = deviceDao.getCurrentConnection();
+        currentAppConnection.setText(currentDevice.getAppName());
 
         deviceName = (EditText) findViewById(R.id.edit_device_name);
         deviceIp = (EditText) findViewById(R.id.edit_ip_address);

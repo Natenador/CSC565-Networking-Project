@@ -1,9 +1,6 @@
 package views;
 
 import java.io.Serializable;
-import java.util.List;
-
-import data.HouseHubData;
 
 public class HouseHubView implements Serializable{
 

@@ -3,8 +3,9 @@ package com.example.natha.househub.util;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.database.HouseHubDatabase;
+
+import domain.Device;
 
 /**
  * Created by natha on 10/20/2016.

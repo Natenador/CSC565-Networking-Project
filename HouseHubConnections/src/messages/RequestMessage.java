@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public class RequestMessage implements Serializable{
 
-	public static final int REQUEST_COMMAND_LIST = 0;
+	public static final int REQUEST_VIEW = 0;
+	public static final int LOCAL_COMMAND = 1;
 	/**
 	 * 
 	 */

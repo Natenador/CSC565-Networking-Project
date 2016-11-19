@@ -1,8 +1,6 @@
 package base;
 
-import java.io.IOException;
-
-import test.Device;
+import messages.LocalCommandResponse;
 import views.CommandList;
 import views.DataList;
 
@@ -15,6 +13,7 @@ import views.DataList;
  */
 public interface HouseHubViewCreation {
 
+	public LocalCommandResponse createLocalCommandResponse(int command);
 	public CommandList createCommandList();
 	public DataList createDataList();
 }

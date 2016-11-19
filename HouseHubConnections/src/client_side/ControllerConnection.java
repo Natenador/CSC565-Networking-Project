@@ -14,9 +14,11 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import base.HouseHubConnection;
+import messages.LocalCommandResponse;
 import messages.RequestMessage;
-import test.Device;
+import domain.Device;
 import views.CommandList;
+import views.DataList;
 import views.HouseHubView;
 
 public class ControllerConnection extends HouseHubConnection{
@@ -28,42 +30,76 @@ public class ControllerConnection extends HouseHubConnection{
 	DataInputStream fromServer;
 	Queue<String> messagesFromServer = new LinkedBlockingQueue<String>();
 	
-	public ControllerConnection() {
+	public ControllerConnection(Device device) {
+		setHostName(device.getIpAddress());
+		setSocketNumber(device.getSocketNumber());
 		connected = false;
 	}
 
-	public int connectTo(Device device) {
-		setHostName(device.getIpAddress());
-		setSocketNumber(device.getPortNumber());
-		setId(CURRENT_ID++);
-		connected = true;
+	public CommandList requestCommandList() {
+		CommandList commandList= null;
 		try {
-			String messageToServer = "";
-			while(!messageToServer.equals("quit") && connected) {  //Send and receive message until transaction is complete
-				Socket client = new Socket(hostName, socketNumber);  //create connection with server
-				ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());  
-				/*BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-				System.out.println("Enter a message:");
-				messageToServer = reader.readLine();
-				out.writeUTF(messageToServer);*/  
-				RequestMessage message = new RequestMessage();
-				message.setId(0);
-				message.setCommand(RequestMessage.REQUEST_COMMAND_LIST);
-				message.setViewRequested(HouseHubView.COMMAND_LIST);
-				out.writeObject(message);
-				ObjectInputStream in = new ObjectInputStream(client.getInputStream()); //listen for server input
-				CommandList commandList = (CommandList) in.readObject();
-				System.out.println(commandList);
-				client.close();
-			}
-			disconnect();
+			Socket client = new Socket(hostName, socketNumber);  //create connection with server
+			ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
+			RequestMessage message = new RequestMessage();
+			message.setId(0);
+			message.setCommand(RequestMessage.REQUEST_VIEW);
+			message.setViewRequested(HouseHubView.COMMAND_LIST);
+			out.writeObject(message);
+			ObjectInputStream in = new ObjectInputStream(client.getInputStream()); //listen for server input
+			commandList = (CommandList) in.readObject();
+			client.close();
 
 		}
 		catch(IOException | ClassNotFoundException e) {
 			System.out.println("Could not connect to " + hostName);
 			e.printStackTrace();
 		}
-		return id;
+		return commandList;
+	}
+	
+	public DataList requestDataList() {
+		DataList dataList= null;
+		try {
+			Socket client = new Socket(hostName, socketNumber);  //create connection with server
+			ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
+			RequestMessage message = new RequestMessage();
+			message.setId(0);
+			message.setCommand(RequestMessage.REQUEST_VIEW);
+			message.setViewRequested(HouseHubView.DATA_LIST);
+			out.writeObject(message);
+			ObjectInputStream in = new ObjectInputStream(client.getInputStream()); //listen for server input
+			dataList = (DataList) in.readObject();
+			System.out.println(dataList);
+			client.close();
+
+		}
+		catch(IOException | ClassNotFoundException e) {
+			System.out.println("Could not connect to " + hostName);
+			e.printStackTrace();
+		}
+		return dataList;
+	}
+	
+	public LocalCommandResponse sendLocalCommand(int command) {
+		LocalCommandResponse response = null;
+		try {
+			Socket client = new Socket(hostName, socketNumber);  //create connection with server
+			ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
+			RequestMessage message = new RequestMessage();
+			message.setId(0);
+			message.setCommand(command);
+			out.writeObject(message);
+			ObjectInputStream in = new ObjectInputStream(client.getInputStream()); //listen for server input
+			response = (LocalCommandResponse) in.readObject();
+			client.close();
+
+		}
+		catch(IOException | ClassNotFoundException e) {
+			System.out.println("Could not connect to " + hostName);
+			e.printStackTrace();
+		}
+		return response;
 	}
 	
 	public String getRecentMessage() {
@@ -84,14 +120,5 @@ public class ControllerConnection extends HouseHubConnection{
 
 	public void setHostName(String hostName) {
 		this.hostName = hostName;
-	}
-
-	public static void main(String[] args) throws IOException {
-		Device device = new Device("Test Device");
-		device.setIpAddress("localhost");
-		device.setPortNumber(13000);
-		
-		ControllerConnection controller = new ControllerConnection();
-		controller.connectTo(device);
 	}
 }

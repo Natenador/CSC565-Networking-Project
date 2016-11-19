@@ -14,6 +14,11 @@
                 android:id="@+id/command_list"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Command List" />
+
+            <item
+                android:id="@+id/data_list"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Data List" />
         </menu>
     </item>
 

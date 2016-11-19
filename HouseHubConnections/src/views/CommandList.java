@@ -31,10 +31,4 @@ public class CommandList extends HouseHubView {
 	public void addCommand(String name, int type) {
 		commands.add(new CommandListItem(name, type));
 	}
-	@Override
-	public String toString() {
-		return "CommandList [commands=" + commands + ", getType()=" + getType() + ", getName()=" + getName()
-				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
-				+ "]";
-	}
 }

@@ -9,12 +9,13 @@ import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.database.HouseHubDatabase;
 import com.example.natha.househub.util.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import domain.Device;
 
 /**
  * Created by natha on 10/16/2016.

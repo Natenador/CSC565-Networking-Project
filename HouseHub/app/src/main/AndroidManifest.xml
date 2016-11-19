@@ -19,12 +19,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.EditDevice"
-            android:label="@string/title_activity_edit_device"
+            android:name=".activity.DeviceEdit"
+            android:label="@string/title_activity_device_edit"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".adapter.DeviceEdit"
-            android:label="@string/title_activity_device_edit"
+            android:name=".activity.CommandList"
+            android:label="@string/title_activity_command_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

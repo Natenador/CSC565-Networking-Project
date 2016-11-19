@@ -10,15 +10,15 @@ import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.natha.househub.Domain.Device;
 import com.example.natha.househub.R;
-import com.example.natha.househub.activity.EditDevice;
+import com.example.natha.househub.activity.DeviceEdit;
 import com.example.natha.househub.activity.MainActivity;
 import com.example.natha.househub.dao.DeviceDao;
 import com.example.natha.househub.database.HouseHubDatabase;
 import com.example.natha.househub.util.DeviceUtil;
+
+import domain.Device;
 
 /**
  * Created by natha on 10/16/2016.

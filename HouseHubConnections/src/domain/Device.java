@@ -1,8 +1,5 @@
-package com.example.natha.househub.Domain;
+package domain;
 
-/**
- * Created by natha on 10/16/2016.
- */
 public class Device {
 
     private static int CURRENT_SOCKET_NUMBER = 13000;
